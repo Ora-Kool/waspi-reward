@@ -2,6 +2,7 @@
 
 use App\Models\Post;
 use Inertia\Inertia;
+use App\Models\Comment;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\PostController;
@@ -31,6 +32,8 @@ Route::prefix('posts')->group(function () {
     Route::controller(PostController::class)->group(function () {
         Route::post('/store', 'storePost')->name('post.store');
         Route::get('/{post:title}/like', 'likePost')->name('post.like');
+        Route::post('/{post:title}/comment', 'storeComment')->name('comment.store');
+        Route::delete('/comments/{comment}', 'deleteComment')->name('comment.delete');
     });
 });
 
@@ -45,7 +48,16 @@ Route::get('/dashboard', function () {
             "likes" => count($post->likes) ? count($post->likes) : 0,
             "isLiked" => $post->likes->contains(function (object $like, int $key) {
                 return $like->user_id === auth()->user()->id;
-            })
+            }),
+            "badges" => collect($post->user->badges)->map(fn($badge) => [
+                "id" => $badge->id
+            ])
+        ]),
+        "comments" => Comment::all()->map(fn($comment) => [
+            "id" => $comment->id,
+            "message" => $comment->message,
+            "createdAt" => $comment->created_at->longRelativeDiffForHumans(),
+            "user" => $comment->user->name
         ]),
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');

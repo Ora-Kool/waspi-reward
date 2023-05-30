@@ -10,7 +10,8 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('badges_users', function (Blueprint $table) {
+        Schema::create('badge_user', function (Blueprint $table) {
+            $table->primary(['user_id', 'badge_id']);
             $table->foreignId('user_id')
                 ->constrained()
                 ->onUpdate('cascade')
@@ -28,6 +29,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('badges_users');
+        Schema::dropIfExists('badge_user');
     }
 };

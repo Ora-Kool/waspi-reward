@@ -20,7 +20,7 @@ return new class extends Migration {
                 ->constrained()
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->text('body');
+            $table->text('message');
             $table->softDeletes();
             $table->timestamps();
         });

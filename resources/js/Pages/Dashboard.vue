@@ -1,4 +1,5 @@
 <script setup>
+import CommentForm from "@/Components/Form/CommentForm.vue";
 import Modal from "@/Components/Modal.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import TextInput from "@/Components/TextInput.vue";
@@ -13,22 +14,26 @@ import { ref, computed } from "vue";
 
 const props = defineProps({
   posts: Object,
+  comments: Object,
 });
 
 const isPosts = computed(() => (Object.keys(props.posts).length > 0 ? true : false));
 
 const openCommentModal = ref(false);
 
+const postTitle = ref("");
+
 const form = useForm({
   comment: "",
 });
 
-const openingModal = () => {
+const openingModal = (param) => {
+  postTitle.value = param;
   openCommentModal.value = true;
 };
 
 const submit = () => {
-  form.post(route("profile.destroy"), {
+  form.post(route("comment.store", postTitle.value), {
     preserveScroll: true,
     onSuccess: () => closeModal(),
     onFinish: () => form.reset(),
@@ -46,14 +51,10 @@ const closeModal = () => {
   <Head title="Dashboard" />
 
   <AuthenticatedLayout>
-    <template #header>
-      <h2 class="font-semibold text-xl text-gray-800 leading-tight">Dashboard</h2>
-    </template>
-
     <div class="py-6">
-      <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-          <div class="px-6 py-4 text-2xl text-center underline text-gray-900">
+      <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
+          <div class="px-6 py-4 text-2xl text-center text-gray-900 underline">
             Create a post
           </div>
 
@@ -63,8 +64,8 @@ const closeModal = () => {
     </div>
 
     <div class="py-2">
-      <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+      <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
           <div class="p-6">
             <template v-if="isPosts">
               <ol class="relative border-l border-gray-200 dark:border-gray-700">
@@ -73,6 +74,7 @@ const closeModal = () => {
                   v-for="(post, index) in props.posts"
                   :key="index"
                   :posts="post"
+                  :badges="post.badges"
                 />
               </ol>
             </template>
@@ -92,42 +94,40 @@ const closeModal = () => {
     <Modal :show="openCommentModal" @close="closeModal">
       <div class="p-6">
         <h2 class="text-lg font-medium text-gray-900">
-          Are you sure you want to delete your account?
+          Comments for <span class="text-red-500">{{ postTitle }}</span>
         </h2>
 
-        <p class="mt-1 text-sm text-gray-600">
-          Once your account is deleted, all of its resources and data will be permanently
-          deleted. Please enter your password to confirm you would like to permanently
-          delete your account.
-        </p>
+        <div class="grid mt-6 md:grid-cols-2">
+          <div>
+            <InputLabel for="comment" value="Comment" class="sr-only" />
 
-        <div class="mt-6">
-          <InputLabel for="comment" value="Comment" class="sr-only" />
+            <TextInput
+              id="comment"
+              ref="commentInput"
+              v-model="form.comment"
+              type="text"
+              class="block w-full mt-1"
+              placeholder="Enter a comment"
+              @keyup.enter="submit"
+            />
 
-          <TextInput
-            id="comment"
-            ref="commentInput"
-            v-model="form.comment"
-            type="text"
-            class="mt-1 block w-3/4"
-            placeholder="Enter a comment"
-            @keyup.enter="submit"
-          />
+            <InputError :message="form.errors.comment" class="mt-2" />
+          </div>
 
-          <InputError :message="form.errors.comment" class="mt-2" />
-        </div>
-
-        <div class="mt-6 flex justify-end">
-          <PrimaryButton
-            class="ml-3"
-            :class="{ 'opacity-25': form.processing }"
-            :disabled="form.processing"
-            @click="submit"
-          >
-            Delete Account
-          </PrimaryButton>
+          <div class="flex justify-end">
+            <PrimaryButton
+              class="ml-3"
+              :class="{ 'opacity-25': form.processing }"
+              :disabled="form.processing"
+              @click="submit"
+            >
+              Post
+            </PrimaryButton>
+          </div>
         </div>
       </div>
+
+      <CommentForm :comments="comments" />
     </Modal>
   </AuthenticatedLayout>
 </template>

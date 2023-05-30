@@ -12,6 +12,13 @@ class Comment extends Model
     use HasFactory, SoftDeletes;
 
     /**
+     * The attributes that aren't mass assignable.
+     *
+     * @var array
+     */
+    protected $guarded = [];
+
+    /**
      * Get the user that owns the Comment
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

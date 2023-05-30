@@ -1,10 +1,14 @@
 <script setup>
+import SuperBadge from "@/Components/Badge/SuperBadge.vue";
+import TopBadge from "@/Components/Badge/TopBadge.vue";
+import BeginnerBadge from "@/Components/Badge/BeginnerBadge.vue";
 import Comment from "@/Components/Icons/Comment.vue";
 import Like from "@/Components/Icons/Like.vue";
 import { useForm } from "@inertiajs/vue3";
 
 const props = defineProps({
   posts: Object,
+  badges: Array,
 });
 
 defineEmits(["openModal"]);
@@ -38,13 +42,22 @@ const submit = () => {
       </svg>
     </span>
     <h3
-      class="flex items-center mb-1 capitalize text-lg font-semibold text-gray-900 dark:text-white"
+      class="flex items-center mb-1 text-lg font-semibold text-gray-900 capitalize dark:text-white"
     >
       {{ props.posts.title }}
-      <span
-        class="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300 ml-3"
-        v-text="props.posts.user"
-      ></span>
+      <div class="flex">
+        <span
+          class="bg-blue-100 text-blue-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300 ml-3"
+          v-text="props.posts.user"
+        ></span>
+        <div v-for="badge in props.badges" class="flex items-center gap-1">
+          <BeginnerBadge v-show="badge.id === 1" />
+
+          <TopBadge v-show="badge.id === 2" />
+
+          <SuperBadge v-show="badge.id === 3" />
+        </div>
+      </div>
     </h3>
     <time
       class="block mb-2 text-sm font-normal leading-none text-gray-400 dark:text-gray-500"
@@ -55,8 +68,8 @@ const submit = () => {
       v-text="props.posts.message"
     ></p>
     <div
-      @click="$emit('openModal')"
-      class="inline-flex cursor-pointer items-center gap-1 text-sm"
+      @click="$emit('openModal', props.posts.title)"
+      class="inline-flex items-center gap-1 text-sm cursor-pointer"
     >
       <Comment />
       <span class="font-bold" v-text="props.posts.comments"></span>
@@ -64,7 +77,7 @@ const submit = () => {
 
     <div
       @click="submit"
-      class="inline-flex cursor-pointer items-center gap-1 text-sm ml-2"
+      class="inline-flex items-center gap-1 ml-2 text-sm cursor-pointer"
     >
       <Like :class="{ 'fill-sky-500': props.posts.isLiked }" />
       <span class="font-bold" v-text="props.posts.likes"></span>
