@@ -20,6 +20,7 @@ use App\Http\Controllers\ProfileController;
 */
 
 Route::get('/', function () {
+    return redirect('logun')
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
