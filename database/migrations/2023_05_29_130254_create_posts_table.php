@@ -18,8 +18,8 @@ return new class extends Migration {
                 ->onDelete('cascade');
             $table->string('title');
             $table->text('message');
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

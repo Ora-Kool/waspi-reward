@@ -16,15 +16,12 @@ class BadgeSeeder extends Seeder
         DB::table('badges')->insert([
             [
                 "name" => "Beginner",
-                "requirement" => 50
             ],
             [
                 "name" => "Top-fan",
-                "requirement" => 2500
             ],
             [
                 "name" => "Super-fan",
-                "requirement" => 5000
             ]
         ]);
     }

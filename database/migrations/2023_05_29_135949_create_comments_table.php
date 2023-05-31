@@ -21,8 +21,8 @@ return new class extends Migration {
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->text('message');
-            $table->softDeletes();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -77,16 +77,6 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the point associated with the User
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-    public function point(): HasOne
-    {
-        return $this->hasOne(Point::class);
-    }
-
-    /**
      * The badges that belong to the User
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
@@ -94,10 +84,5 @@ class User extends Authenticatable
     public function badges(): BelongsToMany
     {
         return $this->belongsToMany(Badge::class);
-    }
-
-    public function totalPoints()
-    {
-        return $this->point->value;
     }
 }

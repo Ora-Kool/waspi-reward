@@ -13,7 +13,6 @@ return new class extends Migration {
         Schema::create('badges', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->integer('requirement')->comment("in points");
             $table->timestamps();
         });
     }
